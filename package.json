@@ -1,0 +1,16 @@
+{
+  "name": "diel-task-calendar",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Task calendar for the Diel technical challenge, junior and mid-level scope.",
+  "packageManager": "pnpm@11.19.0",
+  "engines": { "node": ">=24 <25", "pnpm": ">=11 <12" },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @diel/api --filter @diel/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "check": "pnpm typecheck && pnpm test && pnpm build",
+    "seed": "pnpm --filter @diel/api seed"
+  }
+}
