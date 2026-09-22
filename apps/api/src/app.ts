@@ -19,10 +19,18 @@ export interface AppOptions {
 
 export async function buildApp(options: AppOptions = {}) {
   const app = Fastify({ logger: options.logger ?? false, bodyLimit: 64 * 1024 });
-  const db = openDatabase(options.databasePath ?? process.env.DATABASE_PATH ?? './data/diel.sqlite');
+  const db = openDatabase(
+    options.databasePath ?? process.env.DATABASE_PATH ?? './data/diel.sqlite',
+  );
   const repository = new Repository(db);
-  const holidays = new HolidayService(options.holidayFetcher, options.now, options.holidayCacheTtlMs);
-  app.addHook('onClose', async () => { db.close(); });
+  const holidays = new HolidayService(
+    options.holidayFetcher,
+    options.now,
+    options.holidayCacheTtlMs,
+  );
+  app.addHook('onClose', async () => {
+    db.close();
+  });
 
   await app.register(cors, {
     origin: options.webOrigin ?? process.env.WEB_ORIGIN ?? 'http://127.0.0.1:5173',
@@ -32,33 +40,56 @@ export async function buildApp(options: AppOptions = {}) {
 
   app.setErrorHandler((error, request, reply) => {
     if (error instanceof ZodError) {
-      return reply.status(400).send({ error: {
-        code: 'VALIDATION_ERROR',
-        message: 'Confira os dados informados.',
-        details: error.issues.map((issue) => ({ field: issue.path.join('.'), message: issue.message })),
-      } });
+      return reply.status(400).send({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Confira os dados informados.',
+          details: error.issues.map((issue) => ({
+            field: issue.path.join('.'),
+            message: issue.message,
+          })),
+        },
+      });
     }
     if (error instanceof ApiError) {
-      return reply.status(error.statusCode).send({ error: {
-        code: error.code, message: error.message, ...(error.details ? { details: error.details } : {}),
-      } });
+      return reply.status(error.statusCode).send({
+        error: {
+          code: error.code,
+          message: error.message,
+          ...(error.details ? { details: error.details } : {}),
+        },
+      });
     }
-    const status = typeof error === 'object' && error !== null && 'statusCode' in error
-      ? Number(error.statusCode) : 500;
+    const status =
+      typeof error === 'object' && error !== null && 'statusCode' in error
+        ? Number(error.statusCode)
+        : 500;
     if (status >= 400 && status < 500) {
-      return reply.status(status).send({ error: {
-        code: 'INVALID_REQUEST', message: status === 413 ? 'O conteúdo enviado excede o limite permitido.' : 'Requisição inválida.',
-      } });
+      return reply.status(status).send({
+        error: {
+          code: 'INVALID_REQUEST',
+          message:
+            status === 413
+              ? 'O conteúdo enviado excede o limite permitido.'
+              : 'Requisição inválida.',
+        },
+      });
     }
     request.log.error(error);
-    return reply.status(500).send({ error: { code: 'INTERNAL_ERROR', message: 'Ocorreu um erro inesperado. Tente novamente.' } });
+    return reply.status(500).send({
+      error: { code: 'INTERNAL_ERROR', message: 'Ocorreu um erro inesperado. Tente novamente.' },
+    });
   });
   app.setNotFoundHandler((_request, reply) => {
-    return reply.status(404).send({ error: { code: 'NOT_FOUND', message: 'Endereço não encontrado.' } });
+    return reply
+      .status(404)
+      .send({ error: { code: 'NOT_FOUND', message: 'Endereço não encontrado.' } });
   });
 
   app.get('/api/health', async () => ({ status: 'ok' }));
-  app.get('/api/tasks', async (request) => ({ data: repository.listTasks(taskQuerySchema.parse(request.query)) }));
+  app.get('/api/tasks', async (request) => ({
+    data: repository.listTasks(taskQuerySchema.parse(request.query)),
+  }));
   app.post('/api/tasks', async (request, reply) => {
     const task = repository.saveTask(taskSchema.parse(request.body));
     return reply.status(201).send({ data: task });

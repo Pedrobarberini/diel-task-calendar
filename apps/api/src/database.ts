@@ -41,8 +41,10 @@ export function openDatabase(filename: string): DatabaseSync {
         CREATE INDEX tasks_starts_at_idx ON tasks(starts_at_ms);
         CREATE INDEX task_tags_tag_id_idx ON task_tags(tag_id);
       `);
-      db.prepare('INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)')
-        .run(1, new Date().toISOString());
+      db.prepare('INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)').run(
+        1,
+        new Date().toISOString(),
+      );
     });
   }
   return db;

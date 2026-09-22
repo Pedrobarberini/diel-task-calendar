@@ -18,7 +18,10 @@ export interface Holiday {
   global: boolean;
 }
 
-export type HolidayFetcher = (url: string, init: RequestInit) => Promise<Pick<Response, 'ok' | 'json'>>;
+export type HolidayFetcher = (
+  url: string,
+  init: RequestInit,
+) => Promise<Pick<Response, 'ok' | 'json'>>;
 
 export class HolidayService {
   private readonly cache = new Map<number, { expiresAt: number; holidays: Holiday[] }>();
@@ -46,21 +49,32 @@ export class HolidayService {
 
   private async load(year: number): Promise<Holiday[]> {
     try {
-      const response = await this.fetcher(`https://date.nager.at/api/v3/PublicHolidays/${year}/BR`, {
-        signal: AbortSignal.timeout(5000),
-        headers: { accept: 'application/json' },
-      });
+      const response = await this.fetcher(
+        `https://date.nager.at/api/v3/PublicHolidays/${year}/BR`,
+        {
+          signal: AbortSignal.timeout(5000),
+          headers: { accept: 'application/json' },
+        },
+      );
       if (!response.ok) throw new Error('Holiday provider returned an error');
       const parsed = z.array(providerHolidaySchema).parse(await response.json());
       const holidays = parsed
-        .filter((holiday) => holiday.global && holiday.types.includes('Public') && holiday.date.startsWith(`${year}-`))
+        .filter(
+          (holiday) =>
+            holiday.global &&
+            holiday.types.includes('Public') &&
+            holiday.date.startsWith(`${year}-`),
+        )
         .map(({ types: _types, ...holiday }) => holiday)
         .sort((a, b) => a.date.localeCompare(b.date));
       this.cache.set(year, { expiresAt: this.now() + this.cacheTtlMs, holidays });
       return holidays;
     } catch {
-      throw new ApiError(503, 'HOLIDAYS_UNAVAILABLE',
-        'Não foi possível carregar os feriados agora. Suas tarefas continuam disponíveis. Tente novamente em instantes.');
+      throw new ApiError(
+        503,
+        'HOLIDAYS_UNAVAILABLE',
+        'Não foi possível carregar os feriados agora. Suas tarefas continuam disponíveis. Tente novamente em instantes.',
+      );
     }
   }
 }
