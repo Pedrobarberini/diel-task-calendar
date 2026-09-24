@@ -85,6 +85,8 @@ O prefixo `demo-` mantém os testes sem acesso ao projeto real. Os testes exerci
 
 ## Roteiro para apresentar
 
+Para explicar o código e as decisões etapa por etapa, comece pelo [roteiro de raciocínio e código](RACIOCINIO_E_CODIGO.md).
+
 1. Abra o link público e explique que o computador local pode estar desligado.
 2. Mostre a tela de acesso e entre com Google. Uma primeira conta estará vazia.
 3. Crie uma tag e uma tarefa, navegue entre dia/semana/mês e demonstre os filtros.
@@ -110,6 +112,6 @@ Não há dashboard, gráficos, tarefas recorrentes, notificações, integração
 
 Em 23/09/2026, o site foi publicado em `https://pedrobarberini.github.io/diel-task-calendar/`. O workflow [35939294759](https://github.com/Pedrobarberini/diel-task-calendar/actions/runs/35939294759) aprovou formatação, TypeScript, 40 testes de código, build e 5 testes de regras Firestore antes do deploy. As regras foram publicadas no console Firebase. O endpoint público de configuração confirmou `pedrobarberini.github.io` entre os domínios autorizados.
 
-A tela de login foi aberta e inspecionada no site publicado. O teste de popup Google no navegador integrado retornou erro de conexão; isso não comprova sucesso nem identifica sozinho a causa. A conclusão do fluxo Google em Chrome/Edge precisa ser confirmada pelo usuário. Os testes adicionais de Authentication usam o emulador oficial para cadastro, senha incorreta, login/logout, recuperação de senha e identidade Google simulada; não substituem o consentimento OAuth real em produção.
+A tela de login foi aberta e inspecionada no site publicado. O teste de popup Google no navegador integrado retornou erro de conexão; isso não comprova sucesso nem identifica sozinho a causa. Posteriormente, o usuário confirmou que o login no site publicado funcionou perfeitamente. Essa é uma confirmação manual do usuário; não uma execução automatizada do fluxo OAuth pelo assistente. Os testes adicionais de Authentication usam o emulador oficial para cadastro, senha incorreta, login/logout, recuperação de senha e identidade Google simulada; não substituem o consentimento OAuth real em produção.
 
 [Documentação oficial dos testes de Authentication](https://firebase.google.com/docs/emulator-suite/connect_auth).

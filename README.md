@@ -35,6 +35,8 @@ O seed não grava no Firebase. Não há migração automática entre SQLite e Fi
 
 ## Entender e apresentar o código
 
+- [Roteiro principal: código e linha de raciocínio](docs/RACIOCINIO_E_CODIGO.md): decisões por etapa, funções para abrir, falas sugeridas, exemplos e perguntas de entrevista.
+
 - [Firebase, publicação e roteiro da versão online](docs/FIREBASE_E_PUBLICACAO.md): tudo que mudou nesta evolução, operação, modelo de dados e limites.
 - [Apresentação do desafio original](docs/APRESENTACAO.md): demonstração dos fluxos e perguntas técnicas sobre REST/SQLite.
 - [Arquitetura original](docs/ARQUITETURA.md): API, banco relacional, datas e decisões.

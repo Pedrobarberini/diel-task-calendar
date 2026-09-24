@@ -1,3 +1,5 @@
+> **Apresentação atual:** use primeiro [Código e linha de raciocínio](RACIOCINIO_E_CODIGO.md), que conecta a entrega original à evolução online. Este documento permanece como aprofundamento da versão REST.
+
 > **Documento da entrega REST/SQLite original.** Esse perfil continua disponível localmente com VITE_DATA_MODE=rest. A versão online atual usa Firebase, login e GitHub Pages; veja [Firebase e publicação](FIREBASE_E_PUBLICACAO.md) e o [README](../README.md). As menções abaixo à ausência de autenticação e aos dados SQLite se referem ao perfil original.
 
 # Guia para apresentar o projeto à Diel
