@@ -19,3 +19,6 @@ playwright-report/
 Thumbs.db
 .idea/
 .vscode/
+
+# Local study notes and presentation material
+/docs/
