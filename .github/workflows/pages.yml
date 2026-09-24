@@ -27,8 +27,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Test Firestore access rules
-        run: pnpm dlx firebase-tools@15.30.2 emulators:exec --only firestore --project demo-diel-calendar "node --test apps/web/tests/firestore.rules.mjs"
+      - name: Test Firebase authentication and access rules
+        run: pnpm dlx firebase-tools@15.30.2 emulators:exec --only auth,firestore --project demo-diel-calendar "node --test apps/web/tests/auth.flows.mjs apps/web/tests/firestore.rules.mjs"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

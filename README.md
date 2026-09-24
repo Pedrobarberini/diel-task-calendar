@@ -53,7 +53,7 @@ O seed não grava no Firebase. Não há migração automática entre SQLite e Fi
 | `pnpm seed`                   | Exemplos no SQLite local                                 |
 | `pnpm build`                  | Build do frontend e backend                              |
 
-O workflow `CI` verifica pushes e pull requests. `Deploy GitHub Pages` verifica o código e executa mais **5 testes de regras Firestore no emulador** antes de publicar pushes na `main`. O deploy usa o caminho `/diel-task-calendar/`. Regras do banco são publicadas separadamente; alterar um arquivo de regras no GitHub não modifica o Firebase automaticamente.
+O workflow `CI` verifica pushes e pull requests. `Deploy GitHub Pages` verifica o código e executa mais **8 testes nos emuladores de autenticação e Firestore** antes de publicar pushes na `main`. O deploy usa o caminho `/diel-task-calendar/`. Regras do banco são publicadas separadamente; alterar um arquivo de regras no GitHub não modifica o Firebase automaticamente.
 
 ```text
 apps/api/                    API REST original, SQLite e testes

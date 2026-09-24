@@ -13,7 +13,7 @@ Esta evolução foi solicitada depois da entrega júnior/pleno. Ela acrescenta a
 7. Mantidos CRUD, filtros, duração, sobreposição de datas, visualizações e tags. Nomes de tags são reservados em transação para impedir duplicatas no fluxo normal da aplicação.
 8. Movida a consulta de feriados da versão online para a API pública Nager.Date diretamente no navegador, com timeout de 5 segundos, cache em memória por 24 horas e filtro de feriados nacionais públicos. Falhas não bloqueiam tarefas.
 9. Configurado GitHub Pages com deploy por Actions, base path do repositório, artefato estático e verificações antes da publicação. Nenhum servidor local precisa ficar ligado.
-10. Adicionados 8 testes de validação/filtros da persistência online e 5 cenários de regras Firestore no emulador, preservando os 32 testes originais. Atualizada a documentação e mantidas mensagens de commit em inglês.
+10. Adicionados 8 testes de validação/filtros da persistência online e 8 cenários nos emuladores (3 de autenticação e 5 de regras Firestore), preservando os 32 testes originais. Atualizada a documentação e mantidas mensagens de commit em inglês.
 
 ## Como explicar a arquitetura
 
@@ -78,7 +78,7 @@ O deploy do Pages não precisa de credenciais Firebase administrativas, pois ape
 Para testar as regras localmente, instale Java 21 e execute na raiz:
 
 ```bash
-pnpm dlx firebase-tools@15.30.2 emulators:exec --only firestore --project demo-diel-calendar "node --test apps/web/tests/firestore.rules.mjs"
+pnpm dlx firebase-tools@15.30.2 emulators:exec --only auth,firestore --project demo-diel-calendar "node --test apps/web/tests/auth.flows.mjs apps/web/tests/firestore.rules.mjs"
 ```
 
 O prefixo `demo-` mantém os testes sem acesso ao projeto real. Os testes exercitam CRUD do dono; bloqueio de acesso sem login e de outra conta em todas as coleções privadas; documentos inválidos; timestamps; tags; e caminhos desconhecidos.
@@ -105,3 +105,11 @@ Não há dashboard, gráficos, tarefas recorrentes, notificações, integração
 - [Regras do Firestore](https://firebase.google.com/docs/firestore/security/rules-conditions)
 - [Transações Firestore](https://firebase.google.com/docs/firestore/manage-data/transactions)
 - [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages)
+
+## Evidências da publicação
+
+Em 23/09/2026, o site foi publicado em `https://pedrobarberini.github.io/diel-task-calendar/`. O workflow [35939294759](https://github.com/Pedrobarberini/diel-task-calendar/actions/runs/35939294759) aprovou formatação, TypeScript, 40 testes de código, build e 5 testes de regras Firestore antes do deploy. As regras foram publicadas no console Firebase. O endpoint público de configuração confirmou `pedrobarberini.github.io` entre os domínios autorizados.
+
+A tela de login foi aberta e inspecionada no site publicado. O teste de popup Google no navegador integrado retornou erro de conexão; isso não comprova sucesso nem identifica sozinho a causa. A conclusão do fluxo Google em Chrome/Edge precisa ser confirmada pelo usuário. Os testes adicionais de Authentication usam o emulador oficial para cadastro, senha incorreta, login/logout, recuperação de senha e identidade Google simulada; não substituem o consentimento OAuth real em produção.
+
+[Documentação oficial dos testes de Authentication](https://firebase.google.com/docs/emulator-suite/connect_auth).
