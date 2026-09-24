@@ -1,3 +1,5 @@
+> **Documento da entrega REST/SQLite original.** Esse perfil continua disponível localmente com VITE_DATA_MODE=rest. A versão online atual usa Firebase, login e GitHub Pages; veja [Firebase e publicação](FIREBASE_E_PUBLICACAO.md) e o [README](../README.md). As menções abaixo à ausência de autenticação e aos dados SQLite se referem ao perfil original.
+
 # Guia para apresentar o projeto à Diel
 
 Este roteiro prepara uma apresentação de 8 a 10 minutos e uma conversa técnica sobre o código. Leia junto com [ARQUITETURA.md](./ARQUITETURA.md) e com o código-fonte. O objetivo é conseguir demonstrar e explicar cada decisão com suas próprias palavras.

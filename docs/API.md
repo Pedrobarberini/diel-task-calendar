@@ -1,3 +1,5 @@
+> **Documento da entrega REST/SQLite original.** Esse perfil continua disponível localmente com VITE_DATA_MODE=rest. A versão online atual usa Firebase, login e GitHub Pages; veja [Firebase e publicação](FIREBASE_E_PUBLICACAO.md) e o [README](../README.md). As menções abaixo à ausência de autenticação e aos dados SQLite se referem ao perfil original.
+
 # Referência da API REST
 
 Base local: `http://127.0.0.1:3001/api`. Requisições com corpo JSON (`POST` e `PUT`) usam `Content-Type: application/json`. `GET` e `DELETE` não enviam esse cabeçalho nem corpo. A API não exige autenticação, conforme o recorte até pleno.

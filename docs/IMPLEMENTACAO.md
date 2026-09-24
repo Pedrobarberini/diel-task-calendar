@@ -1,3 +1,5 @@
+> **Documento da entrega REST/SQLite original.** Esse perfil continua disponível localmente com VITE_DATA_MODE=rest. A versão online atual usa Firebase, login e GitHub Pages; veja [Firebase e publicação](FIREBASE_E_PUBLICACAO.md) e o [README](../README.md). As menções abaixo à ausência de autenticação e aos dados SQLite se referem ao perfil original.
+
 # Registro da implementação
 
 Este documento reúne o trabalho realizado para o desafio. Para entender as decisões em profundidade, leia [ARQUITETURA.md](ARQUITETURA.md); para ensaiar a demonstração, use [APRESENTACAO.md](APRESENTACAO.md).

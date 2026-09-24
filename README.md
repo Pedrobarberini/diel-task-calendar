@@ -1,112 +1,69 @@
 # Diel · Calendário de tarefas
 
-SPA de calendário implementada para o desafio técnico da Diel, cobrindo os níveis **júnior e pleno**. Interface em português, código e commits em inglês, API REST e frontend em aplicações independentes.
+[Acessar calendário online](https://pedrobarberini.github.io/diel-task-calendar/) · [Repositório](https://github.com/Pedrobarberini/diel-task-calendar)
+
+Calendário React + TypeScript do desafio Diel, com requisitos júnior/pleno e uma evolução solicitada posteriormente: publicação no GitHub Pages, login pelo Google e e-mail/senha com Firebase, e dados privados por usuário no Firestore. Interface em português e commits em inglês. Dashboard e gráficos do escopo sênior continuam fora da entrega.
+
+## Versão online
+
+Abra o link, escolha **Continuar com o Google** ou **Criar conta**. A aplicação oferece recuperação de senha, mantém a sessão após recarregar e permite sair. Cada conta começa com o calendário vazio. As tarefas ficam na nuvem e podem ser acessadas em outro dispositivo com a mesma conta.
+
+Funcionalidades: criar/editar/excluir tarefas, título/descrição/data/hora/duração, várias tags coloridas, cadastro/edição/exclusão de tags, filtros por título e tags (OU), visões dia/semana/mês, navegação e feriados nacionais brasileiros via Nager.Date. Layout responsivo, confirmações de exclusão e tratamento de erros.
 
 ## Executar localmente
 
-Requisitos: **Node.js 24.x**, **pnpm 11.x** e Git. Para instalar o pnpm com o Node já instalado: `npm install --global pnpm@11.19.0`.
+Requisitos: Node.js 24.x e pnpm 11.19.0 (`npm install --global pnpm@11.19.0`).
 
 ```bash
 git clone https://github.com/Pedrobarberini/diel-task-calendar.git
 cd diel-task-calendar
 pnpm install --frozen-lockfile
-pnpm seed
-pnpm dev
+pnpm --filter @diel/web dev
 ```
 
-Abra **http://127.0.0.1:5173**. A API responde em **http://127.0.0.1:3001/api/health**.
+Abra **http://localhost:5173** para testar o login (localhost é um domínio autorizado). Por padrão, o frontend usa o mesmo Firebase da versão online, portanto grava dados reais da conta autenticada. Não é preciso executar a API local. A configuração pública Web está em `apps/web/src/lib/firebase.ts`; não contém credenciais administrativas. Para usar outro projeto, copie `apps/web/.env.example` para `.env.local` no mesmo diretório e preencha **todas** as quatro variáveis Firebase.
 
-`pnpm seed` é opcional: cria exemplos para a apresentação. Sem ele, a aplicação começa vazia. Os dados ficam em um arquivo SQLite local, ignorado pelo Git. Não é necessário instalar um servidor de banco de dados nem obter uma chave da API de feriados.
+## Versão REST original do desafio
 
-## O que foi implementado
+A implementação Fastify + SQLite foi preservada para demonstrar os requisitos originais de frontend/backend independentes e API REST. Ela é um perfil **local, sem autenticação**, separado do Firebase.
 
-| Requisito                          | Entrega                                                                      |
-| ---------------------------------- | ---------------------------------------------------------------------------- |
-| Cadastro de tarefa                 | Título, descrição, data, horário, duração e múltiplas tags                   |
-| Edição e remoção                   | Formulário de edição e confirmação antes da exclusão                         |
-| Dia, semana e mês                  | Navegação entre períodos, botão Hoje e calendário lateral                    |
-| Busca por título                   | Busca combinada com período e tags                                           |
-| Cadastro, edição e remoção de tags | Nome e cor; remover uma tag preserva suas tarefas                            |
-| Filtro por múltiplas tags          | Semântica **OU**: basta possuir uma das tags selecionadas                    |
-| Feriados nacionais                 | API Nager.Date, Brasil, nome e destaque nos dias correspondentes             |
-| Frontend e backend isolados        | Pacotes separados, comunicação exclusivamente via HTTP/JSON                  |
-| Persistência                       | SQLite, migração versionada e relação muitos-para-muitos                     |
-| Qualidade                          | TypeScript estrito, testes automatizados, build e pipeline no GitHub Actions |
+1. Crie `apps/web/.env.local` com `VITE_DATA_MODE=rest`.
+2. Execute `pnpm seed` (opcional, exemplos SQLite) e `pnpm dev`.
+3. Abra http://127.0.0.1:5173. A API responde em http://127.0.0.1:3001/api/health.
 
-**Escopo sênior não implementado:** cadastro/login de usuários, autenticação, gráficos de resolução e dashboard de tags. A aplicação é uma agenda única para demonstração local; não há separação de dados por usuário.
+O seed não grava no Firebase. Não há migração automática entre SQLite e Firestore. Remova `VITE_DATA_MODE=rest` para voltar ao perfil online. O GitHub Pages sempre utiliza Firebase; ele hospeda arquivos estáticos e não executa o servidor Fastify.
 
 ## Entender e apresentar o código
 
-- [Roteiro de apresentação e perguntas técnicas](docs/APRESENTACAO.md): demonstração passo a passo e explicações para a entrevista.
-- [Arquitetura e decisões técnicas](docs/ARQUITETURA.md): fluxo das requisições, banco, datas, segurança e limites.
-- [Referência da API](docs/API.md): endpoints, exemplos de payloads e respostas de erro.
-- [Registro de implementação e validação](docs/IMPLEMENTACAO.md): resumo completo do trabalho, comandos executados e evidências.
+- [Firebase, publicação e roteiro da versão online](docs/FIREBASE_E_PUBLICACAO.md): tudo que mudou nesta evolução, operação, modelo de dados e limites.
+- [Apresentação do desafio original](docs/APRESENTACAO.md): demonstração dos fluxos e perguntas técnicas sobre REST/SQLite.
+- [Arquitetura original](docs/ARQUITETURA.md): API, banco relacional, datas e decisões.
+- [Referência da API REST](docs/API.md): endpoints, payloads e erros do perfil local.
+- [Registro da implementação original](docs/IMPLEMENTACAO.md): decisões e evidências da primeira entrega.
 
-## Comandos
+## Qualidade e publicação
 
-| Comando                           | Finalidade                                              |
-| --------------------------------- | ------------------------------------------------------- |
-| `pnpm dev`                        | Inicia frontend e API em paralelo                       |
-| `pnpm seed`                       | Insere dados de demonstração no banco                   |
-| `pnpm test`                       | Executa testes da API e do frontend                     |
-| `pnpm format:check`               | Verifica a formatação do código e da documentação       |
-| `pnpm format`                     | Aplica a formatação com Prettier                        |
-| `pnpm typecheck`                  | Verifica os tipos das duas aplicações                   |
-| `pnpm build`                      | Compila a API e gera os arquivos estáticos da SPA       |
-| `pnpm check`                      | Executa formatação, tipos, testes e build em sequência  |
-| `pnpm --filter @diel/api start`   | Executa a API compilada, após o build                   |
-| `pnpm --filter @diel/web preview` | Visualiza localmente o build da SPA, com a API iniciada |
+| Comando                       | Finalidade                                               |
+| ----------------------------- | -------------------------------------------------------- |
+| `pnpm check`                  | Formatação, tipos, 40 testes e build das duas aplicações |
+| `pnpm test`                   | Testes de API, datas, filtros, validação e cliente HTTP  |
+| `pnpm format`                 | Formatar código e documentação                           |
+| `pnpm --filter @diel/web dev` | Frontend conectado ao Firebase                           |
+| `pnpm dev`                    | Frontend e API local em paralelo                         |
+| `pnpm seed`                   | Exemplos no SQLite local                                 |
+| `pnpm build`                  | Build do frontend e backend                              |
 
-O pipeline em `.github/workflows/ci.yml` executa `pnpm check` em pushes e pull requests. As versões exatas das dependências estão em `pnpm-lock.yaml`.
-
-## Organização
+O workflow `CI` verifica pushes e pull requests. `Deploy GitHub Pages` verifica o código e executa mais **5 testes de regras Firestore no emulador** antes de publicar pushes na `main`. O deploy usa o caminho `/diel-task-calendar/`. Regras do banco são publicadas separadamente; alterar um arquivo de regras no GitHub não modifica o Firebase automaticamente.
 
 ```text
-apps/
-  api/                 API REST, SQLite, validação, feriados e testes
-  web/                 SPA React, componentes, hooks e testes de calendário
-docs/                  Documentação para execução, revisão e apresentação
-.github/workflows/     Verificação automática no GitHub Actions
+apps/api/                    API REST original, SQLite e testes
+apps/web/src/components/     Login e componentes do calendário
+apps/web/src/lib/api.ts       Adaptador Firestore e seleção do perfil REST
+apps/web/src/lib/firebase.ts  Inicialização dos SDKs
+apps/web/src/lib/rest-api.ts  Cliente HTTP original
+apps/web/tests/               Testes de regras Firestore
+firestore.rules              Autorização por UID e validação dos documentos
+firebase.json                Regras, índices e configuração do emulador
+.github/workflows/           CI e publicação no Pages
+docs/                        Guias de implementação e apresentação
 ```
-
-Cada aplicação tem seu `package.json`, `tsconfig.json`, dependências e build. O workspace apenas simplifica os comandos locais; a API não importa o React e a SPA não importa código do servidor.
-
-## Regras importantes
-
-- O calendário usa o fuso horário local do navegador; a API armazena instantes em UTC.
-- Feriados são datas civis (`AAAA-MM-DD`), sem conversão de fuso.
-- Uma tarefa que começa antes da meia-noite e termina no dia seguinte aparece nos dois dias.
-- Filtros por título e tags são combinados; as tags entre si usam **OU**.
-- A semana começa no domingo. O mês também mostra dias adjacentes para completar as semanas.
-- Excluir uma tarefa remove seus vínculos; excluir uma tag remove apenas os vínculos dessa tag.
-- Feriados usam `global: true` e tipo `Public` do provedor, excluindo registros apenas opcionais ou bancários. O aplicativo reflete a classificação da API, sem calendário legal próprio.
-- Indisponibilidade do serviço de feriados gera um aviso, mantendo o gerenciamento de tarefas disponível.
-
-## Limitações e uso
-
-A API inicia em loopback para apresentação local. A ausência de autenticação faz parte do recorte solicitado: CORS e cabeçalhos HTTP não substituem controle de acesso. Não publique esta API na internet com dados reais sem adicionar autenticação, autorização, HTTPS e operação adequada.
-
-SQLite simplifica a avaliação e funciona bem neste volume de dados. O acesso síncrono e o arquivo único têm limites de concorrência; a documentação explica a evolução possível, sem afirmar que foi implementada. `node:sqlite` pode emitir um aviso experimental no Node 24.
-
-## Referências
-
-- [Nager.Date](https://date.nager.at/) — integração REST de feriados.
-- [Node.js — SQLite](https://nodejs.org/docs/latest-v24.x/api/sqlite.html) — persistência nativa.
-- [Fastify](https://fastify.dev/docs/latest/) — API HTTP.
-- [React](https://react.dev/) e [Vite](https://vite.dev/guide/) — SPA e build.
-
-A solução foi construída com assistência de IA. A documentação foi preparada para apoiar o estudo, a revisão e uma apresentação transparente das decisões e dos resultados.
-
-## Configuração opcional
-
-A execução padrão dispensa arquivos `.env`.
-
-| Aplicação | Variável        | Padrão                  | Uso                                                                                      |
-| --------- | --------------- | ----------------------- | ---------------------------------------------------------------------------------------- |
-| API       | `HOST`          | `127.0.0.1`             | Interface de rede do servidor                                                            |
-| API       | `PORT`          | `3001`                  | Porta HTTP                                                                               |
-| API       | `DATABASE_PATH` | `./data/diel.sqlite`    | Arquivo relativo ao diretório de execução da API (`apps/api` pelos scripts do workspace) |
-| API       | `WEB_ORIGIN`    | `http://127.0.0.1:5173` | Origem liberada pelo CORS                                                                |
-| SPA       | `VITE_API_URL`  | `/api`                  | Base da API; configurada no build/Vite                                                   |
-
-A API lê variáveis do processo, **não carrega `.env` automaticamente**. No PowerShell, por exemplo, use `$env:PORT = '3001'` antes de iniciar. O Vite lê arquivos `.env` em `apps/web`; variáveis com prefixo `VITE_` são públicas e não devem conter segredos. Alterar a porta da API também exige ajustar o proxy do Vite em `apps/web/vite.config.ts` ou definir uma URL absoluta na SPA com o CORS correspondente.
