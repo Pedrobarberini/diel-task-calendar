@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function taskValid() {
+      let d = request.resource.data;
+      return d.keys().hasAll(['title','description','startsAt','durationMinutes','tagIds','createdAt','updatedAt'])
+        && d.keys().hasOnly(['title','description','startsAt','durationMinutes','tagIds','createdAt','updatedAt'])
+        && d.title is string && d.title.size() > 0 && d.title.size() <= 160
+        && d.description is string && d.description.size() <= 5000
+        && d.startsAt is timestamp && d.durationMinutes is int && d.durationMinutes >= 1 && d.durationMinutes <= 10080
+        && d.tagIds is list && d.tagIds.size() <= 20 && d.tagIds.toSet().size() == d.tagIds.size()
+        && d.createdAt is timestamp && d.updatedAt == request.time;
+    }
+    match /users/{uid}/tasks/{taskId} {
+      allow read, delete: if owner(uid);
+      allow create: if owner(uid) && taskValid() && request.resource.data.createdAt == request.time;
+      allow update: if owner(uid) && taskValid() && request.resource.data.createdAt == resource.data.createdAt;
+    }
+    match /users/{uid}/tags/{tagId} {
+      allow read, delete: if owner(uid);
+      allow create, update: if owner(uid)
+        && request.resource.data.keys().hasAll(['name','color','nameKey'])
+        && request.resource.data.keys().hasOnly(['name','color','nameKey'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 40
+        && request.resource.data.color is string && request.resource.data.color.matches('^#[0-9a-fA-F]{6}$')
+        && request.resource.data.nameKey is string && request.resource.data.nameKey.matches('^[0-9a-f]{64}$');
+    }
+    match /users/{uid}/tagNames/{nameKey} {
+      allow read, delete: if owner(uid);
+      allow create, update: if owner(uid)
+        && request.resource.data.keys().hasOnly(['tagId'])
+        && request.resource.data.tagId is string && request.resource.data.tagId.size() > 0 && request.resource.data.tagId.size() <= 128;
+    }
+  }
+}

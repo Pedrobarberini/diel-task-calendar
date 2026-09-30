@@ -1,0 +1,10 @@
+node_modules/
+.pnpm-store/
+.firebase/
+dist/
+coverage/
+pnpm-lock.yaml
+tmp/
+*.sqlite*
+*.db*
+*.tsbuildinfo
